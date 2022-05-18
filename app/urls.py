@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import TransactionListView
+from .views import TransactionList
 
 urlpatterns = [
-    path("", TransactionListView.as_view(), name="home"),
+    path("", TransactionList.as_view(), name="home"),
 ]
