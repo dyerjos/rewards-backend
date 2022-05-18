@@ -1,7 +1,7 @@
-from django.contrib import admin
 from django.urls import path
 
+from .views import TransactionListView
+
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    # TODO: add api endpoints
+    path("", TransactionListView.as_view(), name="home"),
 ]
