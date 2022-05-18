@@ -34,7 +34,7 @@ class BalanceView(APIView):
         for transaction in transactions:
             payer = transaction["payer"].upper()
             available_points = transaction["available_points"]
-            if not hasattr(balance_totals, payer):
+            if not balance_totals.get(payer):
                 balance_totals[payer] = available_points
             else:
                 balance_totals[payer] += available_points
@@ -47,20 +47,15 @@ class SpendBalanceView(APIView):
     """
 
     def post(self, request, format=None):
-        print(request.data)
         point_receipt = []
         points_to_spend = request.data["points"]
-        # { "points": 5000 }
-        print(points_to_spend)
         transactions = Transaction.objects.filter(available_points__gt=0).order_by(
             "timestamp"
         )
-        print(transactions)
 
         for transaction in transactions:
             if points_to_spend:
                 spent_points = clamp(transaction.available_points, points_to_spend)
-                print(spent_points)
                 points_to_spend -= spent_points
                 transaction.available_points -= spent_points
                 transaction.redeemed_points += spent_points
