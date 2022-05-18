@@ -16,7 +16,7 @@ class TransactionList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = TransactionSerializer(data=request.data, many=True)
+        serializer = TransactionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -39,3 +39,45 @@ class BalanceView(APIView):
             else:
                 balance_totals[payer] += available_points
         return Response(balance_totals)
+
+
+class SpendBalanceView(APIView):
+    """
+    Spend reward point balance.
+    """
+
+    def post(self, request, format=None):
+        print(request.data)
+        point_receipt = []
+        points_to_spend = request.data["points"]
+        # { "points": 5000 }
+        print(points_to_spend)
+        transactions = Transaction.objects.filter(available_points__gt=0).order_by(
+            "timestamp"
+        )
+        print(transactions)
+
+        for transaction in transactions:
+            if points_to_spend:
+                spent_points = clamp(transaction.available_points, points_to_spend)
+                print(spent_points)
+                points_to_spend -= spent_points
+                transaction.available_points -= spent_points
+                transaction.redeemed_points += spent_points
+                transaction.save()
+                point_receipt.append(
+                    {"payer": transaction.payer, "points": -spent_points}
+                )
+
+        if points_to_spend > 0:
+            point_receipt.append(
+                {
+                    f"{points_to_spend} points could not be spent due to a lack of reward points at this time"
+                }
+            )
+
+        return Response(point_receipt)
+
+
+def clamp(smallest, largest):
+    return max(smallest, min(1, largest))

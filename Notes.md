@@ -27,7 +27,7 @@ earn_points route:
 - return a response to the front end
 
 spend_points route:
-- PUT
+- POST
 - must provide points field
 { "points": 5000 }
 - return payer and and points for each transaction redeemed
