@@ -3,6 +3,8 @@ from .models import Transaction
 
 
 class TransactionSerializer(serializers.ModelSerializer):
+    points = serializers.IntegerField(source="initial_points")
+
     class Meta:
         model = Transaction
-        fields = ("payer", "available_points", "redeemed_points", "timestamp")
+        fields = ("payer", "points", "timestamp")
