@@ -21,3 +21,21 @@ class TransactionList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BalanceView(APIView):
+    """
+    Return current reward point balance.
+    """
+
+    def get(self, request, format=None):
+        transactions = Transaction.objects.values()
+        balance_totals = {}
+        for transaction in transactions:
+            payer = transaction["payer"].upper()
+            available_points = transaction["available_points"]
+            if not hasattr(balance_totals, payer):
+                balance_totals[payer] = available_points
+            else:
+                balance_totals[payer] += available_points
+        return Response(balance_totals)
