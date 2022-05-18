@@ -71,7 +71,14 @@ To get a local copy up and running follow these simple example steps.
     ```shell
     docker-compose up -d --build
     ```
-2. Server is now running on http://127.0.0.1:8000/
+
+    Alternatively if the image is already built, you can run:
+
+    ```shell
+    docker-compose up -d
+    ```
+
+3. Server is now running on http://127.0.0.1:8000/
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
