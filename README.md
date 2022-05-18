@@ -78,7 +78,12 @@ To get a local copy up and running follow these simple example steps.
     docker-compose up -d
     ```
 
-3. Server is now running on http://127.0.0.1:8000/
+3. Run migrations:
+  ```shell
+  docker-compose exec web python manage.py migrate
+  ```
+
+4. Server is now running on http://127.0.0.1:8000/
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
